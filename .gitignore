@@ -1,0 +1,15 @@
+# Node
+node_modules/
+
+# Local env files
+backend/.env
+frontend/.env
+.env
+.env.*
+
+# Backup folder used during cleanup
+.git_backup/
+
+# Build artifacts
+dist/
+build/
