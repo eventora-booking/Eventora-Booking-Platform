@@ -13,31 +13,40 @@ const createAdmin = async () => {
     const adminEmail = 'gundeeparora66@gmail.com';
     const adminPassword = 'Agra@3293';
     
-    // Check if admin already exists
-    const existingAdmin = await User.findOne({ email: adminEmail });
+    // Delete existing user if exists (to start fresh)
+    await User.deleteOne({ email: adminEmail });
+    console.log('🗑️  Removed any existing user with this email');
     
-    if (existingAdmin) {
-      // Update existing user to admin
-      existingAdmin.role = 'admin';
-      existingAdmin.isVerified = true;
-      existingAdmin.isActive = true;
-      existingAdmin.password = adminPassword; // Will be hashed by pre-save hook
-      await existingAdmin.save();
-      console.log('✅ Admin user updated successfully!');
+    // Create new admin user (this ensures password is hashed correctly)
+    const admin = await User.create({
+      name: 'Admin User',
+      email: adminEmail,
+      password: adminPassword, // Will be hashed by pre-save hook
+      role: 'admin',
+      isVerified: true,
+      provider: 'local',
+      isActive: true
+    });
+    
+    console.log('✅ Admin user created successfully!');
+    console.log('Email:', admin.email);
+    console.log('Role:', admin.role);
+    console.log('IsVerified:', admin.isVerified);
+    console.log('Provider:', admin.provider);
+    
+    // Verify the password works
+    const verifyUser = await User.findOne({ email: adminEmail }).select('+password');
+    if (!verifyUser) {
+      console.log('❌ Failed to find user after creation!');
+      process.exit(1);
+    }
+    
+    const isPasswordCorrect = await verifyUser.comparePassword(adminPassword);
+    if (isPasswordCorrect) {
+      console.log('✅ Password verification successful!');
     } else {
-      // Create new admin user
-      const admin = await User.create({
-        name: 'Admin User',
-        email: adminEmail,
-        password: adminPassword, // Will be hashed by pre-save hook
-        role: 'admin',
-        isVerified: true,
-        provider: 'local',
-        isActive: true
-      });
-      console.log('✅ Admin user created successfully!');
-      console.log('Email:', admin.email);
-      console.log('Role:', admin.role);
+      console.log('❌ Password verification failed!');
+      console.log('This might indicate an issue with password hashing.');
     }
     
     process.exit(0);

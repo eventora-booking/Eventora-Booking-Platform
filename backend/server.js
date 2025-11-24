@@ -6,8 +6,11 @@ const connectDB = require('./config/db');
 // Load env vars
 dotenv.config();
 
-// Connect to database
-connectDB();
+// Connect to database (non-blocking - server will start even if DB fails)
+connectDB().catch(err => {
+  console.error('Failed to connect to database on startup:', err.message);
+  console.log('Server will continue to run, but database operations will fail.');
+});
 
 const app = express();
 
@@ -87,7 +90,7 @@ app.use((req, res) => {
   });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
