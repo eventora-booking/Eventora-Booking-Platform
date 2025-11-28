@@ -7,7 +7,7 @@ const axios = require('axios');
  */
 
 // TMDB API for movies/events (free API key available at https://www.themoviedb.org/settings/api)
-const TMDB_API_KEY = process.env.TMDB_API_KEY || '1f54bd990f1cdfb2adb9aad825432c95'; // Public demo key
+const TMDB_API_KEY = process.env.TMDB_API_KEY || '8265bd1679663a7ea12ac168da84d2e8'; // Public demo key
 const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
 
 /**
